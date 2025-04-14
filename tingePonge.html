@@ -8,12 +8,37 @@
     <style>
         body {
             text-align: center;
-            background-color: black;
+            background-color: rgb(10, 10, 10);
         }
         canvas {
-            border: 1px solid white;
-            background-color: black;
+            border: 1px solid rgb(105, 4, 4);
+            background-color: rgb(14, 13, 13);
         }
     </style>
 </head>
+<body onload="brython()">
+    <h1 style ="color: grey;">Welcome to Turners Pong Game!</h1>
+    <canvas id = "pong" width="1000" height="500"></canvas>
+
+    <script type="text/python">
+        from browser import document, window
+
+        canvas = document["pong"]
+        ctx = canvas.getContext("2d")
+
+        #ball properties
+        ballR = 10
+        ball_speedx = 5
+        ball_speedy = 5
+        ball = {"x": canvas.width/2, "y": canvas.height/2, "dx": ball_speedx, "dy": ball_speedy }
+
+        def drawBall():
+            ctx.beginPath()
+            ctx.fillStyle = "red"
+            ctx.arc(ball["x"], ball["y"], ballR, 0, 2 * window.Math.PI)
+            ctx.fill()
+            ctx.closePath()
+        drawBall()
+    </script>
+</body>
 </html>
