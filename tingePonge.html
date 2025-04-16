@@ -39,6 +39,30 @@
             ctx.fill()
             ctx.closePath()
         drawBall()
+
+        #paddle properties
+        p1_width = 15
+        p1_length = 100 
+        p1 = {"x": canvas.width-p1_width, "y": canvas.height/2 - 50}
+        cpu = {"x": 0, "y": canvas.height/2 - 50}
+
+        def drawp1():
+            ctx.beginPath()
+            ctx.rect(p1["x"], p1["y"], p1_width, p1_length)
+            ctx.fillStyle = "blue"
+            ctx.fill()
+            ctx.closePath()
+
+            
+        drawp1()
+        def drawcpu():
+            ctx.beginPath()
+            ctx.rect(cpu["x"],cpu["y"], p1_width,p1_length)
+            ctx.fillStyle = "yellow"
+            ctx.fill()
+            ctx.closePath()
+        drawcpu()
+
     </script>
 </body>
 </html>
