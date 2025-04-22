@@ -38,11 +38,12 @@
             ctx.arc(ball["x"], ball["y"], ballR, 0, 2 * window.Math.PI)
             ctx.fill()
             ctx.closePath()
-        drawBall()
+        
 
         #paddle properties
         p1_width = 15
-        p1_length = 100 
+        p1_length = 100
+        paddleSpeed = -25 
         p1 = {"x": canvas.width-p1_width, "y": canvas.height/2 - 50}
         cpu = {"x": 0, "y": canvas.height/2 - 50}
 
@@ -62,7 +63,43 @@
             ctx.fill()
             ctx.closePath()
         drawcpu()
+        
+        #ball movement
+        def MoveBall():
+            ball["x"] += ball["dx"]
+            ball["y"] += ball["dy"]
+            if ball["y"] - ballR == 0 or ball["y"] + ballR == canvas.height: #bounces off bottom of canvas
+                ball["dy"] = -ball["dy"]
+            
+            if ball["x"] + ballR >= p1["x"]: 
+                if ball["y"] - ballR >= p1["y"] and ball["y"] + ballR <= p1["y"] + p1_length: 
+                    ball["dx"] = -ball["dx"]
+            
+            if ball["x"] - ballR <= cpu["x"] + p1_width:
+                if ball["y"] - ballR >= cpu["y"] and ball["y"] + ballR <= cpu["y"] + p1_length: 
+                    ball["dx"] = -ball["dx"]
+        #PaddleMovement
+        def movep1Up():
+            if p1["y"] > 0:         
+                p1["y"] += paddleSpeed
+        def movep1down():
+            if p1["y"] < canvas.height - p1_length:         
+                p1["y"] -= paddleSpeed
 
+        def on_keydown(event):
+            if event.key == "ArrowUp":
+                movep1Up()
+            if event.key == "ArrowDown": 
+                movep1down()
+
+        document.bind("keydown", on_keydown)
+        def game():
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            drawBall()
+            drawcpu()
+            drawp1()
+            MoveBall()
+        window.setInterval(game, 1000 / 60)
     </script>
 </body>
 </html>
