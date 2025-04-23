@@ -25,10 +25,12 @@
 
         canvas = document["pong"]
         ctx = canvas.getContext("2d")
-
+        resetCalled = False
+        sCpu = 0
+        p1Score = 0
         #ball properties
         ballR = 10
-        ball_speedx = 5
+        ball_speedx = 6.5
         ball_speedy = 5
         ball = {"x": canvas.width/2, "y": canvas.height/2, "dx": ball_speedx, "dy": ball_speedy }
 
@@ -44,6 +46,7 @@
         p1_width = 15
         p1_length = 100
         paddleSpeed = -25 
+        cpuPaddleSpeed = -10
         p1 = {"x": canvas.width-p1_width, "y": canvas.height/2 - 50}
         cpu = {"x": 0, "y": canvas.height/2 - 50}
 
@@ -54,7 +57,15 @@
             ctx.fill()
             ctx.closePath()
 
-            
+        goal = {"x": 0, "y": canvas.height/2}
+        def goal1():
+            ctx.beginPath()
+            ctx.font = "100px Arial";
+            ctx.fillText("GOAL",goal["x"],goal["y"])
+            ctx.closePath()
+        def movegoal():
+            goal["x"] += 5
+            print("hello")
         drawp1()
         def drawcpu():
             ctx.beginPath()
@@ -63,11 +74,21 @@
             ctx.fill()
             ctx.closePath()
         drawcpu()
-        
+        def cpuScore():
+            global sCpu
+            global p1Score
+            ctx.font = "20px Arial";
+            ctx.fillText(f"Cpu: {sCpu}",50,20)
+            ctx.font = "20px Arial";
+            ctx.fillText(f"P1: {p1Score}",canvas.width-100,20)
         #ball movement
         def MoveBall():
+            global sCpu
+            global p1Score
+            global resetCalled
             ball["x"] += ball["dx"]
             ball["y"] += ball["dy"]
+            
             if ball["y"] - ballR == 0 or ball["y"] + ballR == canvas.height: #bounces off bottom of canvas
                 ball["dy"] = -ball["dy"]
             
@@ -78,6 +99,27 @@
             if ball["x"] - ballR <= cpu["x"] + p1_width:
                 if ball["y"] - ballR >= cpu["y"] and ball["y"] + ballR <= cpu["y"] + p1_length: 
                     ball["dx"] = -ball["dx"]
+            if ball["x"] >= canvas.width: 
+                sCpu+=1
+                resetBall()
+               
+            if ball["x"] <= 0: 
+               p1Score+=1
+               resetBall()
+        def resetBall():
+            global resetCalled
+            ball["x"] = canvas.width/2
+            ball["y"] = canvas.height/2
+            ball["dx"] = 0
+            ball["dy"] = 0
+            resetCalled = True
+        def resumeBall():
+            global resetCalled
+            resetCalled = False
+            ball["dy"] = 5
+            ball["dx"] = 6.5
+            
+
         #PaddleMovement
         def movep1Up():
             if p1["y"] > 0:         
@@ -85,6 +127,14 @@
         def movep1down():
             if p1["y"] < canvas.height - p1_length:         
                 p1["y"] -= paddleSpeed
+
+        def moveCpu():
+            global cpuPaddleSpeed
+            if cpu["y"] <= 0 or cpu["y"] >= canvas.height - p1_length:              
+                cpu["y"] -= cpuPaddleSpeed
+                cpuPaddleSpeed *= -1
+            else:
+                cpu["y"] += cpuPaddleSpeed
 
         def on_keydown(event):
             if event.key == "ArrowUp":
@@ -99,6 +149,12 @@
             drawcpu()
             drawp1()
             MoveBall()
+            moveCpu()
+            cpuScore()
+            goal1()
+            movegoal()
+            if resetCalled:
+                window.setTimeout(resumeBall, 1000)
         window.setInterval(game, 1000 / 60)
     </script>
 </body>
