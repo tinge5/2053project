@@ -26,6 +26,7 @@
         canvas = document["pong"]
         ctx = canvas.getContext("2d")
         resetCalled = False
+        wait = False
         sCpu = 0
         pause = True
         pause2 = False
@@ -50,7 +51,17 @@
             global pause2
             pause = False
             pause2 = False
-    
+        def over():
+          global wait
+          wait = True
+        def restart():
+          global wait
+          global p1Score
+          global sCpu
+          p1Score = 0
+          sCpu = 0
+          wait = False
+        
         #paddle properties
         p1_width = 15
         p1_length = 100
@@ -65,7 +76,10 @@
             ctx.fillStyle = "blue"
             ctx.fill()
             ctx.closePath()
-
+        def rules():
+            ctx.font = "20x Roman";
+            ctx.fillStyle = "green"
+            ctx.fillText("First to 5 Wins!", canvas.width/2 - 87, 450)
         def movegoal():
             goal["x"] += 5
             print("hello")
@@ -105,12 +119,18 @@
                     ball["dx"] = -ball["dx"]
             if ball["x"] >= canvas.width: 
                 sCpu+=1
+                if sCpu == 5:
+                  over()
                 resetBall()
+                
                
             if ball["x"] <= 0: 
                p1Score+=1
-              
+               if p1Score == 5:
+                over()
                resetBall()
+               
+               
         def resetBall():
             global resetCalled
             ball["x"] = canvas.width/2
@@ -161,19 +181,28 @@
                 play()
             if event.key == "p":
                 pa()
+            if event.key == "x":
+                restart()
 
 
         document.bind("keydown", on_keydown)
         def game():
+            global wait
             global pause2
             global pause
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            drawBall()
+            if wait:
+              ctx.font = "70x Arial";
+              ctx.fillStyle = "red"
+              ctx.fillText("Game over press 'x' to restart", canvas.width/2-120, canvas.height/2)
+              return
             drawcpu()
             cpuScore()
+            drawBall()
             drawp1()
             if pause:
                 intro()
+                rules()
                 return
             if pause2:
                 paused()
