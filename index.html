@@ -133,14 +133,13 @@
                
         def resetBall():
             global resetCalled
+            cpu["y"] = canvas.height/2 - 50
             ball["x"] = canvas.width/2
             ball["y"] = canvas.height/2
             ball["dx"] = 0
             ball["dy"] = 0
             resetCalled = True
         def resumeBall():
-            global resetCalled
-            resetCalled = False
             ball["dy"] = 5
             ball["dx"] = 6.5
             
@@ -190,6 +189,7 @@
             global wait
             global pause2
             global pause
+            global resetCalled
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             if wait:
               ctx.font = "70x Arial";
@@ -211,6 +211,7 @@
             moveCpu()
             
             if resetCalled:
+                resetCalled = False 
                 window.setTimeout(resumeBall, 1000)
         window.setInterval(game, 1000 / 60)
     </script>
