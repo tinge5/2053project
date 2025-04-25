@@ -33,7 +33,7 @@
         p1Score = 0
         #ball properties
         ballR = 10
-        ball_speedx = 6.5
+        ball_speedx = 7
         ball_speedy = 5
         ball = {"x": canvas.width/2, "y": canvas.height/2, "dx": ball_speedx, "dy": ball_speedy }
         def intro():
@@ -67,6 +67,8 @@
         p1_length = 100
         paddleSpeed = -25 
         cpuPaddleSpeed = -10
+        oldx = 0
+        oldy = 0
         p1 = {"x": canvas.width-p1_width, "y": canvas.height/2 - 50}
         cpu = {"x": 0, "y": canvas.height/2 - 50}
 
@@ -133,15 +135,19 @@
                
         def resetBall():
             global resetCalled
-            cpu["y"] = canvas.height/2 - 50
+            global oldx, oldy
+            #cpu["y"] = canvas.height/2 - 50
             ball["x"] = canvas.width/2
             ball["y"] = canvas.height/2
+            oldx = ball["dx"]
+            oldy = ball["dy"]
             ball["dx"] = 0
             ball["dy"] = 0
             resetCalled = True
         def resumeBall():
-            ball["dy"] = 5
-            ball["dx"] = 6.5
+            global oldx, oldy
+            ball["dy"] = -oldy
+            ball["dx"] = -oldx
             
 
         #PaddleMovement
